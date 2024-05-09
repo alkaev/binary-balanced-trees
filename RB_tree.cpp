@@ -1,5 +1,8 @@
 #include <iostream>
 #include <chrono>
+#include <vector>
+#include <fstream>
+#include <random>
 
 using namespace std;
 using namespace std::chrono;
@@ -14,28 +17,9 @@ struct Node {
     Node(int data): data(data), color(RED), l(nullptr), r(nullptr), parent(nullptr) {}
 };
 
-class RBTree {
-private:
-    Node *root;
-
-protected:
-    void rotateLeft(Node *&, Node *&);
-    void rotateRight(Node *&, Node *&);
-    void fixViolation(Node *&, Node *&);
-
-public:
-    RBTree() { root = nullptr; }
-    void insert(const int &n);
-    void inorder();
-    void levelOrder();
-    void inorderHelper(Node *root);
-    void printLevelOrder(Node *root);
-    Node* search(int key);
-    Node* searchHelper(Node* root, int key);
-};
 
 // Левый поворот
-void RBTree::rotateLeft(Node *&root, Node *&pt) {
+void rotateLeft(Node *&root, Node *&pt) {
     Node *pt_right = pt->r;
     pt->r = pt_right->l;
 
@@ -56,7 +40,7 @@ void RBTree::rotateLeft(Node *&root, Node *&pt) {
 }
 
 // Правый поворот
-void RBTree::rotateRight(Node *&root, Node *&pt) {
+void rotateRight(Node *&root, Node *&pt) {
     Node *pt_left = pt->l;
     pt->l = pt_left->r;
 
@@ -77,7 +61,7 @@ void RBTree::rotateRight(Node *&root, Node *&pt) {
 }
 
 // Фиксирование нарушений после вставки
-void RBTree::fixViolation(Node *&root, Node *&pt) {
+void fixViolation(Node *&root, Node *&pt) {
     Node *parent_pt = nullptr;
     Node *grand_parent_pt = nullptr;
 
@@ -141,7 +125,7 @@ void RBTree::fixViolation(Node *&root, Node *&pt) {
 }
 
 // Вставка нового узла
-void RBTree::insert(const int &data) {
+void insert(Node* & root, const int &data) {
     Node *pt = new Node(data);
 
     // Базовая вставка в бинарное дерево поиска
@@ -169,58 +153,97 @@ void RBTree::insert(const int &data) {
     else
         parent->r = pt;
 
-    // Фиксируем нарушения красно-черных свойств
+    // Фикси    м нарушения красно-черных свойств
     fixViolation(root, pt);
 }
 
 // Поиск элемента в дереве
-Node* RBTree::searchHelper(Node* root, int key) {
+Node* search(Node* root, int key) {
     // Если дерево пустое или ключ найден в корне, возвращаем корень
     if (root == nullptr || root->data == key)
         return root;
 
     // Если ключ меньше значения корня, рекурсивно ищем в левом поддереве
     if (key < root->data)
-        return searchHelper(root->l, key);
+        return search(root->l, key);
 
     // Иначе ищем в правом поддереве
-    return searchHelper(root->r, key);
+    return search(root->r, key);
 }
 
-// Для поиска элемента в дереве
-Node* RBTree::search(int key) {
-    return searchHelper(root, key);
+/*
+void generateRandomData(const string& filename, int numElements) {
+    ofstream file(filename);
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(1, 1000000);
+
+    if (file.is_open()) {
+        for (int i = 0; i < numElements; ++i) {
+            file << dis(gen) << endl;
+        }
+        file.close();
+    } else {
+        cerr << "Unable to open file";
+    }
 }
+*/
+
 
 int main() {
+    const string data_file = "test_data.txt";
+    const string search_test_file = "search_test_data.txt";
+    //const int numElements = 100000;
 
+    // Генерация тестовых данных в файл
+    //generateRandomData(data_file, numElements);
+
+    ifstream inputFile(data_file); // Открытие файла для чтения
+    ifstream inputFile2(search_test_file);
+
+    if (!inputFile.is_open() && !inputFile2.is_open()) {
+        cerr << "Error opening file: " << data_file << endl;
+        return 1;
+    }
+
+    Node* root = nullptr;
+    int data;
+
+    vector<int> searchKeys;
+
+    while (inputFile >> data) {
+        searchKeys.push_back(data);
+    }
     // Получаем текущее время до выполнения кода
     auto start = high_resolution_clock::now();
-    RBTree tree;
-    int keys[] = {5, 3, 8, 2, 4, 7, 9};
-    int N = sizeof(keys) / sizeof(keys[0]);
-    for (int i = 0 ; i < N ; i ++){
-        tree.insert(keys[i]);
+
+    // Чтение данных из файла и вставка их в дерево
+    while (inputFile >> data) {
+        insert(root, data);
     }
 
-    // Поиск элемента
-    int searchKeys[] = {1, 3, 7};
-    int n = sizeof(searchKeys) / sizeof(searchKeys[0]);
-    for (int i = 0 ; i < n; i++){
-        Node* result = tree.search(searchKeys[i]);
+    inputFile.close(); // Закрытие файла после чтения данных
+    inputFile2.close();
+    // Поиск элементов в дереве
+    
+    for (int i = 0 ; i < 100000; i++){
+        Node* result = search(root, searchKeys[i]);
         cout << "key " << searchKeys[i] << " is ";
-            if (result == nullptr)
-        cout << "not ";
+        if (result == nullptr)
+            cout << "not ";
         cout << "found in the tree" << endl;
     }
-    // Получаем текущее время после выполнения кода
+
+     // Получаем текущее время после выполнения кода
     auto stop = high_resolution_clock::now();
 
-    // Рассчитываем разницу между текущим временем и временем до выполнения кода
+	// Рассчитываем разницу между текущим временем и временем до выполнения кода
     auto duration = duration_cast<microseconds>(stop - start);
 
     // Выводим время выполнения в микросекундах
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
+
+
 
     return 0;
 }
