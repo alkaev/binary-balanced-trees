@@ -185,24 +185,30 @@ NodeRB* build_red_black(vector<int> data, int n) {
 
 int main() {
 
-    cout << "data type / count of data / count of search \n";
+
+    // выбор структуры данных дерева
+    int choice_test = 1;
+    
+
+    // выбор количества данных
+    int choice_count = 1000000;
+   
+
+    // данные поиска
+    int count_search = choice_count;
+    
+    int count_ = 10;
+
+    long long result = 0;
+
+    for (int j = 0; j < count_; j++){
 
     vector<int> data, search;
 
     string data_file = "data.txt";
     string search_file = "search.txt";
 
-    // выбор структуры данных дерева
-    int choice_test;
-    cin >> choice_test;
-
-    // выбор количества данных
-    int choice_count;
-    cin >> choice_count;
-
-    // данные поиска
-    int count_search;
-    cin >> count_search;
+ 
 
     // генерация файла с данными
     if (choice_test == 1){
@@ -258,8 +264,11 @@ int main() {
     // Рассчитываем разницу между текущим временем и временем до выполнения кода
     auto duration = duration_cast<microseconds>(stop - start);
 
-    // Выводим время выполнения в микросекундах
-    cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
+    result += duration.count();
+
+    }
+
+    cout << result / count_;
 
     return 0;
 }

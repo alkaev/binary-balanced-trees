@@ -81,7 +81,24 @@ NodeCart* build_cart(vector<int> data, vector<int> priors, int n) {
 
 int main() {
 
-    cout << "Entry data type / count of data / priors type / count of search\n";
+
+    // выбор структуры данных дерева
+    int choice_test = 1;
+
+    // выбор количества данных
+    int choice_count = 1000;
+
+    // структура приоритетов
+    int choice_prior = 2;
+
+    // данные поиска
+    int count_search = choice_count;
+
+    long long result = 0;
+
+    int count_ = 10000;
+
+    for (int j = 0; j < count_; j++){
 
     vector<int> data, priors, search;
 
@@ -89,19 +106,7 @@ int main() {
     string search_file = "search.txt";
     string prior_file = "prior.txt";
 
-    // выбор структуры данных дерева
-    int choice_test;
-    cin >> choice_test;
-
-    // выбор количества данных
-    int choice_count;
-    cin >> choice_count;
-
-
-    // структура приоритетов
-    int choice_prior;
-    cin >> choice_prior;
-
+  
     // генерация файла приоритетов
     if (choice_prior == 1){
         generateDataFile(prior_file, choice_count, "random");      
@@ -124,11 +129,6 @@ int main() {
         priors.push_back(prior);  
     
     priorFile.close();
-    
-
-    // данные поиска
-    int count_search;
-    cin >> count_search;
 
     // генерация файла с данными
     if (choice_test == 1){
@@ -183,7 +183,10 @@ int main() {
     auto duration = duration_cast<microseconds>(stop - start);
 
     // Выводим время выполнения в микросекундах
-    cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
+    result += duration.count();
+    }
+
+    cout << result / count_;
 
     return 0;
 }
