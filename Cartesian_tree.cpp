@@ -81,22 +81,25 @@ NodeCart* build_cart(vector<int> data, vector<int> priors, int n) {
 
 int main() {
 
-
     // выбор структуры данных дерева
-    int choice_test = 1;
-
-    // выбор количества данных
-    int choice_count = 1000;
+    int choice_test = 4;
 
     // структура приоритетов
-    int choice_prior = 2;
+    int choice_prior = 4;
+
+    int count_ = 1;
+
+    int arr[4] = {1000, 10000, 100000, 1000000};
+
+    for (int q = 0; q < 4; q++){
+
+    // выбор количества данных
+    int choice_count = arr[q];
 
     // данные поиска
     int count_search = choice_count;
 
     long long result = 0;
-
-    int count_ = 10000;
 
     for (int j = 0; j < count_; j++){
 
@@ -112,7 +115,7 @@ int main() {
         generateDataFile(prior_file, choice_count, "random");      
     } else if (choice_prior == 2) {
         generateDataFile(prior_file, choice_count, "ascending"); 
-    } else if (choice_prior == 3) {
+    } else if (choice_prior == 3) { 
         generateDataFile(prior_file, choice_count, "descending"); 
     } else 
         generateDataFile(prior_file, choice_count, "duplicates");  
@@ -186,8 +189,8 @@ int main() {
     result += duration.count();
     }
 
-    cout << result / count_;
-
+    cout << result / count_<< "\n";
+    }
     return 0;
 }
                 

@@ -90,18 +90,23 @@ NodeRC* build_rand_cart(vector<int> data, int n) {
 
 int main() {
 
-    // выбор структуры данных дерева
-    int choice_test = 1;
+    int arr[4] = {1000, 10000, 100000, 1000000};
+
+     // выбор структуры данных дерева
+    int choice_test = 4;
+
+    for (int q = 0; q < 4; q++){
+
 
     // выбор количества данных
-    int choice_count = 1000000;
+    int choice_count = arr[q];
 
     // данные поиска
     int count_search = choice_count;
 
     long long result = 0;
 
-    int count_ = 10;
+    int count_ = 1;
 
     for (int j = 0; j < count_; j++) {
 
@@ -170,7 +175,8 @@ int main() {
 
     }
 
-    cout << result / count_;
+    cout << result / count_ << '\n';
+    }
 
     return 0;
 }
