@@ -34,7 +34,7 @@ void generateDescendingData(ofstream& file, int count) {
 void generateDataWithDuplicates(ofstream& file, int count) {
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dis(1, max(count/20, 1));
+    uniform_int_distribution<> dis(1, max(count/300, 100));
     for (int i = 0; i < count; ++i) {
         file << dis(gen) << endl;
     }

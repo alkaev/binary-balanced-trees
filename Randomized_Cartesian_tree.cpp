@@ -37,13 +37,16 @@ void split_rand_cart(NodeRC* t, int data, NodeRC* &l, NodeRC* &r) {
     upd_cnt(t);
 }
 
-void insert_rand_cart(NodeRC* &t, NodeRC* it) {
-    if (!t)
+void insert_rand_cart(NodeRC*& t, int value) {
+    NodeRC* it = new NodeRC(value);
+    if (!t) {
         t = it;
-    else if (rand() % (cnt(t) + 1) == 0)
-        split_rand_cart(t, it->data, it->l, it->r), t = it;
-    else
-        insert_rand_cart(it->data < t->data ? t->l : t->r, it);
+    } else if (rand() % (cnt(t) + 1) == 0) {
+        split_rand_cart(t, it->data, it->l, it->r);
+        t = it;
+    } else {
+        insert_rand_cart(it->data < t->data ? t->l : t->r, value);
+    }
     upd_cnt(t);
 }
 
@@ -81,103 +84,11 @@ NodeRC* search_rand_cart(NodeRC* root, int data) {
 NodeRC* build_rand_cart(vector<int> data, int n) {
     NodeRC* t = NULL;
     for (int i = 0; i < n; ++i) {
-        NodeRC* new_NodeRC = new NodeRC(data[i]);
-        insert_rand_cart(t, new_NodeRC);
+        insert_rand_cart(t, data[i]);
     }
     return t;
 }
 
 
-int main() {
 
-    int arr[4] = {1000, 10000, 100000, 1000000};
-
-     // выбор структуры данных дерева
-    int choice_test = 4;
-
-    for (int q = 0; q < 4; q++){
-
-
-    // выбор количества данных
-    int choice_count = arr[q];
-
-    // данные поиска
-    int count_search = choice_count;
-
-    long long result = 0;
-
-    int count_ = 1;
-
-    for (int j = 0; j < count_; j++) {
-
-    
-
-    vector<int> data,  search;
-
-    string data_file = "data.txt";
-    string search_file = "search.txt";
-
-
-    // генерация файла с данными
-    if (choice_test == 1){
-        generateDataFile(data_file, choice_count, "random");      
-    } else if (choice_test == 2) {
-        generateDataFile(data_file, choice_count, "ascending"); 
-    } else if (choice_test == 3) {
-        generateDataFile(data_file, choice_count, "descending"); 
-    } else 
-        generateDataFile(data_file, choice_count, "duplicates");
-    
-    // генерация файла поиска
-    generateDataFile(search_file, count_search, "random");
-
-
-    // Открытие файла для чтения
-    ifstream dataFile(data_file); 
-    ifstream searchFile(search_file);
-
-    if(!dataFile.is_open()) {
-        cerr << "Error opening file: " << data_file << endl;
-        return 0;
-    }
-
-    int value;
-    while (dataFile >> value) 
-        data.push_back(value);
-    
-    if(!searchFile.is_open()){
-        cerr << "Error opening file: " << search_file << endl;
-        return 0;
-    }
-
-    int elem;
-    while (searchFile >> elem)
-        search.push_back(elem);
-    
-    dataFile.close();
-    searchFile.close();
-
-    // Получаем текущее время до выполнения кода
-    auto start = high_resolution_clock::now();
-
-    NodeRC* root = build_rand_cart(data, data.size());
-
-            for (size_t i = 0; i < search.size(); i++) {
-                NodeRC* result = search_rand_cart(root, search[i]);
-            }
-    // Получаем текущее время после выполнения кода
-    auto stop = high_resolution_clock::now();
-
-    // Рассчитываем разницу между текущим временем и временем до выполнения кода
-    auto duration = duration_cast<microseconds>(stop - start);
-
-    result += duration.count();
-
-    }
-
-    cout << result / count_ << '\n';
-    }
-
-    return 0;
-}
 
