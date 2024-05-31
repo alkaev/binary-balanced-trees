@@ -7,15 +7,14 @@
 #include "RB_tree.h"
 #include "Randomized_Cartesian_tree.h"
 #include "Generate.h"
+#include "Cartesian_tree.h"
 
 using namespace std;
 using namespace std::chrono;
 
-template<typename Node, typename InsertFunc, typename SearchFunc>
-void run_test(Node* root, InsertFunc insert, SearchFunc search, const vector<int>& data, const vector<int>& search_data) {
-    for (int value : data) {
-        insert(root, value);
-    }
+template<typename Node, typename BuildFunc, typename SearchFunc>
+void run_test(Node*& root, BuildFunc build, SearchFunc search, const vector<int>& data, const vector<int>& search_data) {
+    root = build(data, data.size());
 
     auto start = high_resolution_clock::now();
 
@@ -31,8 +30,8 @@ void run_test(Node* root, InsertFunc insert, SearchFunc search, const vector<int
 
 int main() {
     int arr[4] = {1000, 10000, 100000, 1000000};
-    int choice_test = 3;
-    int choice_tree = 2; // 1 для красно-черного дерева, 2 для рандомизированного декартова дерева
+    int choice_test = 2;
+    int choice_tree = 3; // 1 для красно-черного дерева, 2 для рандомизированного декартова дерева, 3 для нового дерева
 
     for (int q = 0; q < 4; q++) {
         int choice_count = arr[q];
@@ -80,10 +79,13 @@ int main() {
 
         if (choice_tree == 1) {
             NodeRB* root = nullptr;
-            run_test(root, insert_red_black, search_red_black, data, search);
+            run_test(root, build_red_black, search_red_black, data, search);
         } else if (choice_tree == 2) {
             NodeRC* root = nullptr;
-            run_test(root, insert_rand_cart, search_rand_cart, data, search);
+            run_test(root, build_rand_cart, search_rand_cart, data, search);
+        } else if (choice_tree == 3) {
+            NodeCart* root = nullptr;
+            run_test(root, build_cart, search_cart, data, search);
         }
     }
 
