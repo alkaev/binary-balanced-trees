@@ -39,7 +39,7 @@ void run_test(Node*& root, BuildFunc build, SearchFunc search, vector<int>& data
 
 int main() {
     int arr[4] = {1000, 10000, 100000, 1000000};
-    int choice_test = 1;
+    int choice_test = 4; // выбор данных
     int choice_tree = 2; // 1 для красно-черного дерева, 2 для рандомизированного декартова дерева, 3 для декартового
 
     for (int q = 0; q < 4; q++) {

@@ -11,6 +11,10 @@
 using namespace std;
 using namespace std::chrono;
 
+random_device rrd;
+mt19937 rng(rrd());
+uniform_int_distribution<> distr(1, 1000000000);
+
 struct NodeRC {
     int data, cnt;
     NodeRC *l, *r;
@@ -41,7 +45,7 @@ void insert_rand_cart(NodeRC*& t, int value) {
     NodeRC* it = new NodeRC(value);
     if (!t) {
         t = it;
-    } else if (rand() % (cnt(t) + 1) == 0) {
+    } else if (distr(rng) % (cnt(t) + 1) == 0) {
         split_rand_cart(t, it->data, it->l, it->r);
         t = it;
     } else {
@@ -53,7 +57,7 @@ void insert_rand_cart(NodeRC*& t, int value) {
 void merge_rand_cart(NodeRC* &t, NodeRC* l, NodeRC* r) {
     if (!l || !r)
         t = l ? l : r;
-    else if (rand() % (cnt(l) + cnt(r)) < cnt(l))
+    else if (distr(rng) % (cnt(l) + cnt(r)) < cnt(l))
         merge_rand_cart(l->r, l->r, r), t = l;
     else
         merge_rand_cart(r->l, l, r->l), t = r;
