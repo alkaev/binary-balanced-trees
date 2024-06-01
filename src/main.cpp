@@ -13,31 +13,34 @@ using namespace std;
 using namespace std::chrono;
 
 template<typename Node, typename BuildFunc, typename SearchFunc>
-void run_test(Node*& root, BuildFunc build, SearchFunc search, const vector<int>& data, const vector<int>& search_data, int repeat) {
-    
-    for (int i = 0; i < repeat; i++){
-    auto start = high_resolution_clock::now();
+void run_test(Node*& root, BuildFunc build, SearchFunc search, vector<int>& data, const vector<int>& search_data, int repeat) {
+    for (int i = 0; i < repeat; ++i) {
 
-    root = build(data, data.size());
+        auto start = high_resolution_clock::now();
 
-    
+        root = build(data, data.size()); // Создаем новое дерево
 
-    for (int value : search_data) {
-        search(root, value);
+        for (int value : search_data) {
+            search(root, value);
+        }
+
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+
+        cout << duration.count() << '\n';
     }
 
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
-
-    cout << duration.count() << '\n';
-}
-cout << '\n';
+    // if (root != nullptr) {
+    //         delete_tree(root); // Удаляем предыдущее дерево, если оно существует
+    //         root = nullptr;
+    //     }
+    cout << '\n';
 }
 
 int main() {
     int arr[4] = {1000, 10000, 100000, 1000000};
     int choice_test = 1;
-    int choice_tree = 3; // 1 для красно-черного дерева, 2 для рандомизированного декартова дерева, 3 для нового дерева
+    int choice_tree = 2; // 1 для красно-черного дерева, 2 для рандомизированного декартова дерева, 3 для декартового
 
     for (int q = 0; q < 4; q++) {
         int choice_count = arr[q];
@@ -82,16 +85,18 @@ int main() {
         
         dataFile.close();
         searchFile.close();
+        
+        int repeat = 5  ; // количество повторений
 
         if (choice_tree == 1) {
             NodeRB* root = nullptr;
-            run_test(root, build_red_black, search_red_black, data, search);
+            run_test(root, build_red_black, search_red_black, data, search, repeat);
         } else if (choice_tree == 2) {
             NodeRC* root = nullptr;
-            run_test(root, build_rand_cart, search_rand_cart, data, search);
+            run_test(root, build_rand_cart, search_rand_cart, data, search, repeat);
         } else if (choice_tree == 3) {
             NodeCart* root = nullptr;
-            run_test(root, build_cart, search_cart, data, search);
+            run_test(root, build_cart, search_cart, data, search, repeat);
         }
     }
 
