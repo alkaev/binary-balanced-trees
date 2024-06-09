@@ -10,7 +10,7 @@ using namespace std;
 void generateRandomData(ofstream& file, int count) {
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dis(1, 1000000000);
+    uniform_int_distribution<> dis(1, 1000000);
     for (int i = 0; i < count; ++i) {
         file << dis(gen) << endl;
     }
@@ -41,7 +41,7 @@ void generateDataWithDuplicates(ofstream& file, int count) {
 }
 
 // Функция для генерации данных в файл
-void generateDataFile(const string& filename, int count, const string& structure) {
+void generateDataFile(string filename, int count, string structure) {
     ofstream file(filename);
 
     if (!file) {
