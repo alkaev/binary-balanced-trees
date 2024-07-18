@@ -10,42 +10,29 @@
 #include "Cartesian_tree.h"
 
 using namespace std;
-using namespace chrono;
-
-void writeVectorToFile(const vector<int>& vec, const string& filename) {
-    ofstream outFile(filename);
-
-    if (!outFile) {
-        cerr << "Error opening file:" << filename << endl;
-        return;
-    }
-
-    for (const int& element : vec) {
-        outFile << element << endl;
-    }
-
-    outFile.close();
-}
+using namespace std::chrono;
 
 template<typename Node, typename BuildFunc, typename SearchFunc>
-void run_test(Node*& root, BuildFunc build, SearchFunc search, vector<int>& data, const vector<int>& search_data, int repeat, vector<int>& common) {
+void run_test(Node*& root, BuildFunc build, SearchFunc search, vector<int>& data, const vector<int>& search_data, int repeat) {
+    int sum = 0;
     for (int i = 0; i < repeat; ++i) {
+
+
 
         auto start = high_resolution_clock::now();
 
         root = build(data, data.size()); // Создаем новое дерево
 
         for (int value : search_data) {
-            if(search(root, value))
-                common.push_back(value);
+            search(root, value);
         }
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
 
-        cout << duration.count() << '\n';
+        sum += duration.count();
     }
-
+    cout << sum / repeat;
     // if (root != nullptr) {
     //         delete_tree(root); // Удаляем предыдущее дерево, если оно существует
     //         root = nullptr;
@@ -54,25 +41,26 @@ void run_test(Node*& root, BuildFunc build, SearchFunc search, vector<int>& data
 }
 
 int main() {
-    int arr[1] = {10000};
-    int choice_test = 1; // выбор данных
-    int choice_tree = 1; // 1 для красно-черного дерева, 2 для рандомизированного декартова дерева, 3 для декартового
+    int arr[4] = {1000, 10000, 100000, 1000000};
+    int choice_test = 4; // выбор данных
+    int choice_tree = 3; // 1 для красно-черного дерева, 2 для рандомизированного декартова дерева, 3 для декартового
 
-    for (int elem1 : arr) {
-        int count_search = elem1;
+    for (int q = 0; q < 4; q++) {
+        int choice_count = arr[q];
+        int count_search = choice_count;
 
         vector<int> data, search;
         string data_file = "data.txt";
         string search_file = "search.txt";
 
         if (choice_test == 1) {
-            generateDataFile(data_file, elem1, "random");      
+            generateDataFile(data_file, choice_count, "random");      
         } else if (choice_test == 2) {
-            generateDataFile(data_file, elem1, "ascending"); 
+            generateDataFile(data_file, choice_count, "ascending"); 
         } else if (choice_test == 3) {
-            generateDataFile(data_file, elem1, "descending"); 
+            generateDataFile(data_file, choice_count, "descending"); 
         } else {
-            generateDataFile(data_file, elem1, "duplicates");
+            generateDataFile(data_file, choice_count, "duplicates");
         }
 
         generateDataFile(search_file, count_search, "random");
@@ -101,22 +89,18 @@ int main() {
         dataFile.close();
         searchFile.close();
         
-        int repeat = 1  ; // количество повторений
-        vector<int> common;
+        int repeat = 5  ; // количество повторений
 
         if (choice_tree == 1) {
             NodeRB* root = nullptr;
-            run_test(root, build_red_black, search_red_black, data, search, repeat, common);
+            run_test(root, build_red_black, search_red_black, data, search, repeat);
         } else if (choice_tree == 2) {
             NodeRC* root = nullptr;
-            run_test(root, build_rand_cart, search_rand_cart, data, search, repeat, common);
+            run_test(root, build_rand_cart, search_rand_cart, data, search, repeat);
         } else if (choice_tree == 3) {
             NodeCart* root = nullptr;
-            run_test(root, build_cart, search_cart, data, search, repeat, common);
+            run_test(root, build_cart, search_cart, data, search, repeat);
         }
-        cout << common.size();
-
-        writeVectorToFile(common, "result.txt");
     }
 
     return 0;

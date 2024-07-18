@@ -27,22 +27,25 @@ struct NodeCart {
     }
 };
 
-
-void insert_cart(NodeCart* &t, int data) {
-    if (!t) {
-        t = new NodeCart(data);
-    } else if (t->prior < dis(gen)) { // Compare priority with a random number
-        NodeCart* newNode = new NodeCart(data);
-        newNode->l = t;
-        t = newNode;
-    } else {
-        if (data < t->data) {
-            insert_cart(t->l, data);
-        } else {
-            insert_cart(t->r, data);
-        }
-    }
+void split_cart(NodeCart* t, int key, NodeCart* & l, NodeCart* & r) {
+	if (!t)
+		l = r = NULL;
+	else if (key < t->data)
+		split_cart(t->l, key, l, t->l),  r = t;
+	else
+		split_cart(t->r, key, t->r, r),  l = t;
 }
+
+void insert_cart (NodeCart* t, int value) {
+    NodeCart* it = new NodeCart(value);
+	if (t == nullptr)
+		t = it;
+	else if (it->prior > t->prior)
+		split_cart (t, it->data, it->l, it->r),  t = it;
+	else
+		insert_cart(it->data < t->data ? t->l : t->r, it->data);
+}
+
 
 void merge_cart (NodeCart* & t, NodeCart* l, NodeCart* r) {
     if (!l || !r)
@@ -77,11 +80,3 @@ NodeCart* build_cart(vector<int> data, int size) {
     }
     return root;
 }              
-
-// void delete_cart(NodeCart* root) {
-//     if (root != nullptr) {
-//         delete_cart(root->l); 
-//         delete_cart(root->r); 
-//         delete root; 
-//     }
-// }

@@ -18,7 +18,7 @@ struct NodeCart {
 };
 
 
-void insert_cart(NodeCart* & t, int value);
+void insert_cart (NodeCart* t, int value);
 void merge_cart(NodeCart* & t, NodeCart* l, NodeCart* r);
 void erase_cart(NodeCart* & t, int data);
 // void delete_cart(NodeCart* root);
